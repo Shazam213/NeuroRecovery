@@ -91,12 +91,13 @@ def run_inference(model, filepath):
     # Process predictions if needed (e.g., convert to probabilities or class labels)
     return predictions.cpu().numpy()  # Return as a NumPy array for easy handling
 
-# Example usage
-model_path = 'models/model_ckpt.pth'
-model = EEG_CNN(32, 1)  # Adjust to match your trained model configuration
-model.load_state_dict(torch.load(model_path))
+if __name__ == '__main__':
+    # Example usage
+    model_path = 'models/model_ckpt.pth'
+    model = EEG_CNN(32, 1)  # Adjust to match your trained model configuration
+    model.load_state_dict(torch.load(model_path))
 
-# Filepath to the uploaded EEG data file
-uploaded_file_path = 'test_dataset/Single/Arithmetic_sub_12_trial3.mat'
-predictions = run_inference(model, uploaded_file_path)
-print("Predictions:", predictions)
+    # Filepath to the uploaded EEG data file
+    uploaded_file_path = 'test_dataset/Single/Arithmetic_sub_12_trial3.mat'
+    predictions = run_inference(model, uploaded_file_path)
+    print("Predictions:", predictions)

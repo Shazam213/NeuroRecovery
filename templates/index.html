@@ -1,0 +1,19 @@
+<!-- templates/index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EEG Prediction</title>
+</head>
+<body>
+    <h1>Upload EEG File</h1>
+    <form action="/predict" method="post" enctype="multipart/form-data">
+        <label for="file">Select EEG file:</label>
+        <input type="file" name="file" id="file" accept=".mat">
+        <button type="submit">Upload and Predict</button>
+    </form>
+    <div id="predictionResult"></div>
+</body>
+</html>

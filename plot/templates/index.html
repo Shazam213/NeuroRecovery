@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EEG Plot Viewer</title>
+</head>
+<body>
+    <h1>EEG Plot Viewer</h1>
+
+    <!-- Form to upload MAT file -->
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+        <label for="file">Upload MAT file:</label>
+        <input type="file" name="file" id="file" required>
+        <button type="submit">Upload and Plot</button>
+    </form>
+
+    {% if plot_image %}
+    <h2>Generated EEG Plot:</h2>
+    <!-- Display the plot using base64 encoded image -->
+    <img src="data:image/png;base64,{{ plot_image }}" alt="EEG Plot">
+    {% endif %}
+</body>
+</html>
