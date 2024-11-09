@@ -3,7 +3,7 @@ import torch
 
 # Load LLaMA 3.1 model from Hugging Face
 model_name = "meta-llama/Llama-2-7b-chat-hf"
-token_name = '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'
+token_name = 'enter your token here'
 
 # Load the tokenizer
 tokenizer = AutoTokenizer.from_pretrained(model_name, use_auth_token=token_name)
