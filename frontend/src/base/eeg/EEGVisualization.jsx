@@ -4,11 +4,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Brain } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const EEGVisualization = () => {
   const [eegData, setEegData] = useState([]);
   const { theme } = useTheme();
   const [selectedBand, setSelectedBand] = useState('alpha');
+  const navigate = useNavigate(); // Initialize navigate
 
   // Simulate real-time EEG data updates
   useEffect(() => {
@@ -48,7 +50,9 @@ const EEGVisualization = () => {
             Real-time EEG Analysis
           </CardTitle>
         </CardHeader>
-        <CardContent className="overflow-auto">
+        <CardContent className="overflow-auto space-y-4">
+          {/* Upload Button */}
+
           <Tabs defaultValue="waves" className="space-y-4">
             <TabsList>
               <TabsTrigger value="waves">Brain Waves</TabsTrigger>
@@ -107,6 +111,12 @@ const EEGVisualization = () => {
               </ResponsiveContainer>
             </TabsContent>
           </Tabs>
+          <button
+            onClick={() => navigate('/plot')}
+            className={`px-4 py-2 rounded-md ${theme === 'dark' ? 'bg-blue-500 text-gray-200' : 'bg-blue-600 text-white'}`}
+          >
+            Upload Your EEG Data
+          </button>
         </CardContent>
       </Card>
     </div>
@@ -114,4 +124,3 @@ const EEGVisualization = () => {
 };
 
 export default EEGVisualization;
-
