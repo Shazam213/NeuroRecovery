@@ -116,12 +116,15 @@ const LoginForm = () => {
           </form>
           
           <div className="mt-6 text-center">
-            <p className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-              Don't have an account?{' '}
-              <a href="/register" className="text-blue-600 hover:text-blue-700 font-medium">
-                Sign up
-              </a>
-            </p>
+            <p className={`text-gray-600 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+      Already have an account?{' '}
+      <span 
+        onClick={() => navigate('/register')} 
+        className="text-blue-600 hover:text-blue-700 font-medium cursor-pointer"
+      >
+        Sign Up
+      </span>
+    </p>
           </div>
         </CardContent>
       </Card>
