@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chatbot Input</title>
+    <title>Chatbot</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script> 
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 
 <body class="bg-gray-100 font-sans">
@@ -30,7 +30,8 @@
                     class="flex-1 px-4 py-2 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Type your message..." required />
                 <button type="submit"
-                    class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">Send</button>
+                    class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold"
+                    style="background-color: #3B82F6; color: white;">Send</button>
             </form>
         </div>
     </div>
@@ -65,8 +66,8 @@
                 if (data.status === 'success') {
                     const botMessage = document.createElement('div');
                     botMessage.classList.add('mb-4', 'text-gray-700', 'p-4', 'bg-gray-100', 'rounded-lg');
-                    // botMessage.textContent = data.data.response;
-                    botMessage.innerHTML = marked.parse(data.data.response);
+                    // Now using data.data as it contains the content (response from the assistant)
+                    botMessage.innerHTML = marked.parse(data.data); // Updated to parse the response content
                     messagesContainer.appendChild(botMessage);
                 } else {
                     const errorMessage = document.createElement('div');
@@ -79,7 +80,6 @@
                 errorMessage.textContent = 'Error: Unable to reach server.';
                 messagesContainer.appendChild(errorMessage);
             }
-
             // Scroll to bottom
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         });
