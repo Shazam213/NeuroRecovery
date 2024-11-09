@@ -78,6 +78,13 @@ const Navbar = () => {
       icon: Users,
       isVisible: (isCaregiver) => isCaregiver, // This will be a function that checks the user's role
     },
+    {
+      name: "Chatbot",
+      path: "http://65.20.69.83/", // External URL for the chatbot
+      icon: Users, // Use an appropriate icon or create a new one
+      isVisible: user?.role === "user", // Visible only if the user's role is "user"
+      isExternal: true, // Mark as external link
+    }
   ];
 
   const isActive = (path) => {
@@ -123,39 +130,65 @@ const Navbar = () => {
 
             {/* Main Navigation */}
             <div className="hidden sm:ml-6 sm:flex sm:space-x-4">
-              {user &&
-                navigation.map((item) => {
-                  if (typeof item.isVisible === "function") {
-                    if (!item.isVisible(isCaregiver)) {
-                      return null; // Don't render the item if the condition is false
-                    }
-                  } else if (!item.isVisible) {
-                    return null; // Don't render the item if the condition is false
-                  }
-                  const Icon = item.icon;
-                  return (
-                    <Link
-                      key={item.name}
-                      to={item.path}
-                      className={`inline-flex items-center px-3 py-2 text-sm font-medium rounded-md ${
-                        isActive(item.path)
-                          ? `${
-                              theme === "dark"
-                                ? "text-blue-300 bg-gray-800"
-                                : "text-blue-600 bg-blue-50"
-                            }`
-                          : `${
-                              theme === "dark"
-                                ? "text-gray-400 hover:text-gray-200 hover:bg-gray-800"
-                                : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                            }`
-                      }`}
-                    >
-                      <Icon className="h-4 w-4 mr-2" />
-                      {item.name}
-                    </Link>
-                  );
-                })}
+            {user &&
+  navigation.map((item) => {
+    if (typeof item.isVisible === "function" && !item.isVisible(isCaregiver)) {
+      return null; // Don't render the item if the condition is false
+    } else if (!item.isVisible) {
+      return null; // Don't render the item if the condition is false
+    }
+
+    const Icon = item.icon;
+    if (item.isExternal) {
+      return (
+        <a
+          key={item.name}
+          href={item.path}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`inline-flex items-center px-3 py-2 text-sm font-medium rounded-md ${
+            isActive(item.path)
+              ? `${
+                  theme === "dark"
+                    ? "text-blue-300 bg-gray-800"
+                    : "text-blue-600 bg-blue-50"
+                }`
+              : `${
+                  theme === "dark"
+                    ? "text-gray-400 hover:text-gray-200 hover:bg-gray-800"
+                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                }`
+          }`}
+        >
+          <Icon className="h-4 w-4 mr-2" />
+          {item.name}
+        </a>
+      );
+    }
+
+    return (
+      <Link
+        key={item.name}
+        to={item.path}
+        className={`inline-flex items-center px-3 py-2 text-sm font-medium rounded-md ${
+          isActive(item.path)
+            ? `${
+                theme === "dark"
+                  ? "text-blue-300 bg-gray-800"
+                  : "text-blue-600 bg-blue-50"
+              }`
+            : `${
+                theme === "dark"
+                  ? "text-gray-400 hover:text-gray-200 hover:bg-gray-800"
+                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+              }`
+        }`}
+      >
+        <Icon className="h-4 w-4 mr-2" />
+        {item.name}
+      </Link>
+    );
+  })}
             </div>
           </div>
 
