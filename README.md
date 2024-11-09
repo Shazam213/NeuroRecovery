@@ -118,22 +118,38 @@ NeuroRecovery’s architecture integrates multiple technologies:
 
 ## Setup 
 
-### Infrastructure Setup
-1. Deploy the backend on Vultr Kubernetes Engine.
-2. Configure Vultr Block and Object Storage for data persistence.
-3. Set up Prometheus for real-time monitoring.
+# Project Setup Guide
 
-### Application Deployment
-1. Dockerize backend API, models, and Laravel frontend using Docker Compose.
-2. Deploy the Docker containers on VKE for scalability and consistency.
+## Backend Setup
 
-### Frontend Usage (Chatbot Interface)
-1. Access the chatbot UI through the Laravel frontend, utilizing Serverless Inference.
-2. Caregiver dashboard provides real-time metrics and patient progress forecasts.
+1. **Navigate to the backend directory:**
+   ```bash
+   cd backend
+2. **Install the required dependencies:**
+   ```bash
+   npm install
 
-### Model Integration
-1. Access LLaMA model for task generation via Vultr Serverless Inference API.
-2. Integrate EEG input with Reformer model to adjust task difficulty in real-time.
+3. **Set up the .env file:**
+   ```bash
+   Copy the contents of the env-example file into a new .env file.
+   Modify the values in .env as needed to match your environment.
+
+4. **Start the backend server:**
+
+   ```bash
+   node server.js
+
+## Frontend Setup
+1. **Navigate to the frontend directory:**
+   ```bash
+   cd frontend
+2. **Install the required dependencies:**
+   ```bash
+   npm install
+   
+3. **Run the frontend development server:**
+   ```bash
+   npm run dev
 
 ## Expected Outcomes
 
