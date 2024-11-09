@@ -117,8 +117,8 @@ NeuroRecovery’s architecture integrates multiple technologies:
   - **Response**: JSON with progress metrics and predicted trend.
  
 - **`/get-scores`**
-  - **Description**: Fetches cognitive progress and eeg data.
-  - **Parameters**: Patient ID.
+  - **Description**: Fetches eeg data and corresponding score.
+  - **Parameters**: `patient_id`
   - **Response**:Stress score corresponding to the patient id.
 
 ## Setup 
