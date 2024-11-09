@@ -164,10 +164,10 @@ This project was developed as part of the **Vultr Cloud Innovate Hackathon**. We
 
 ## Team Members
 
-- **Soham Mulye** - ML Developer
-- **Anuj Vaid** - Frontend Developer
-- **Om Doiphode** - Cloud Infrastructure Lead
-- **Dhruvanshu Joshi** - Backend Developer
+- **Soham Mulye** 
+- **Anuj Vaid**
+- **Om Doiphode**
+- **Dhruvanshu Joshi**
 
 ## Conclusion
 
