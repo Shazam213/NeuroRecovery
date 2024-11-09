@@ -27,15 +27,17 @@ const ExerciseHub = () => {
           }
 
           if (ulElement) {
-            const exercises = Array.from(ulElement.getElementsByTagName('li')).map((li) => {
-              const strong = li.querySelector('strong');
-              const exerciseName = strong ? strong.textContent.trim() : 'Exercise';
-              const description = li.textContent.split(':').slice(1).join(':').trim();
-              return {
-                name: exerciseName,
-                description: description,
-              };
-            });
+            const exercises = Array.from(ulElement.getElementsByTagName('li'))
+              .map((li) => {
+                const strong = li.querySelector('strong');
+                const exerciseName = strong ? strong.textContent.trim() : 'Exercise';
+                const description = li.textContent.split(':').slice(1).join(':').trim();
+
+                return {
+                  name: exerciseName,
+                  description: description,
+                };
+              });
 
             categories[category] = exercises;
           }
@@ -47,21 +49,25 @@ const ExerciseHub = () => {
 
     const analysisText = localStorage.getItem('analysis');
     if (analysisText) {
-      const parsedCategories = parseHTMLAnalysis(analysisText);
+      try {
+        const parsedCategories = parseHTMLAnalysis(analysisText);
 
-      const generatedExercises = Object.entries(parsedCategories).flatMap(
-        ([category, exercises], categoryIndex) =>
-          exercises.map((exercise, index) => ({
-            id: `${categoryIndex}-${index}`,
-            title: exercise.name || `${category} Exercise ${index + 1}`,
-            category,
-            duration: '15 min',
-            description: exercise.description,
-            difficulty: index === 0 ? 'Beginner' : 'Intermediate',
-          }))
-      );
+        const generatedExercises = Object.entries(parsedCategories).flatMap(
+          ([category, exercises], categoryIndex) =>
+            exercises.map((exercise, index) => ({
+              id: `${categoryIndex}-${index}`,
+              title: exercise.name || `${category} Exercise ${index + 1}`,
+              category,
+              duration: '15 min',
+              description: exercise.description,
+              difficulty: index === 0 ? 'Beginner' : 'Intermediate',
+            }))
+        );
 
-      setExercises(generatedExercises);
+        setExercises(generatedExercises);
+      } catch (error) {
+        console.error('Error parsing analysis:', error);
+      }
     }
   }, []);
 
