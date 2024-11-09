@@ -118,9 +118,9 @@ NeuroRecovery’s architecture integrates multiple technologies:
 
 ## Setup 
 
-# Project Setup Guide
+### Project Setup Guide
 
-## Backend Setup
+### Backend Setup
 
 1. **Navigate to the backend directory:**
    ```bash
@@ -139,7 +139,7 @@ NeuroRecovery’s architecture integrates multiple technologies:
    ```bash
    node server.js
 
-## Frontend Setup
+### Frontend Setup
 1. **Navigate to the frontend directory:**
    ```bash
    cd frontend
