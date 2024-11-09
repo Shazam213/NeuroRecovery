@@ -57,7 +57,8 @@ The NeuroRecovery platform is deployed and interconnected on Vultr’s cloud inf
 1. **Personalized Exercise Generator**:
    - **Model**: LLaMA 2 
    - **Functionality**: Generates cognitive tasks tailored to patient profiles, aligning with cognitive exercise requirements from CogAtlas. Due to the lack of GPU access, we were unable to fine-tune the model and had to rely solely on prompt engineering to generate cognitive tasks tailored to patient profiles. These tasks were designed using **Vultr’s serverless inference** model of LLaMA 2.
-    
+   
+![games](resources/game.jpeg)
 ![exercise hub](resources/exercise.jpeg)
 
 2. **Caregiver Dashboard with Forecasting Capabilities**:
