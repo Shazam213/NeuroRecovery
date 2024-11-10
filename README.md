@@ -3,7 +3,7 @@
 
 NeuroRecovery is a cloud-based, AI-driven platform designed to provide personalized cognitive rehabilitation to patients recovering from neurological disorders. The platform leverages EEG data for real-time adaptive difficulty, predictive analytics for progress tracking, and a conversational chatbot interface for patient engagement. Built on Vultr’s scalable infrastructure, NeuroRecovery allows patients to access cognitive rehabilitation from home while caregivers receive insightful, real-time updates.
 
-## Link to the deployed website: [NeuroRecovery](http://65.20.84.115/)
+## Link to the deployed website: [NeuroRecovery](http://65.20.75.171/)
 
 ## Table of Contents
 
