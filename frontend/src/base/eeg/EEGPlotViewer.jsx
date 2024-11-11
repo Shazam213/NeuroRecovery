@@ -4,8 +4,63 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useTheme } from '../../contexts/ThemeContext';
-import { Upload, FileIcon, CheckCircle, XCircle } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { Upload, FileIcon, CheckCircle, XCircle, Activity } from 'lucide-react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+
+const StressGauge = ({ score }) => {
+  const percentage = (score * 100).toFixed(1);
+  const getColor = (value) => {
+    if (value < 0.4) return '#22c55e'; // green
+    if (value < 0.7) return '#eab308'; // yellow
+    return '#ef4444'; // red
+  };
+
+  return (
+    <div className="flex flex-col items-center space-y-4 p-6 border rounded-lg bg-card">
+      <h3 className="text-xl font-semibold flex items-center gap-2">
+        <Activity className="w-5 h-5" />
+        Current Stress Level
+      </h3>
+      <div className="relative w-48 h-48">
+        <svg className="w-full h-full transform -rotate-90">
+          <circle
+            cx="96"
+            cy="96"
+            r="88"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="8"
+            className="opacity-10"
+          />
+          <circle
+            cx="96"
+            cy="96"
+            r="88"
+            fill="none"
+            stroke={getColor(score)}
+            strokeWidth="8"
+            strokeDasharray={`${(score * 552).toFixed(1)} 552`}
+            className="transition-all duration-1000 ease-out"
+          />
+        </svg>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
+          <span className="text-4xl font-bold" style={{ color: getColor(score) }}>
+            {percentage}%
+          </span>
+          <p className="text-sm text-muted-foreground mt-1">Stress Score</p>
+        </div>
+      </div>
+      <div className="text-center space-y-1">
+        <p className="font-medium">
+          {score < 0.4 ? 'Low Stress' : score < 0.7 ? 'Moderate Stress' : 'High Stress'}
+        </p>
+        <p className="text-sm text-muted-foreground">
+          Based on EEG analysis
+        </p>
+      </div>
+    </div>
+  );
+};
 
 const EEGPlotViewer = () => {
     const [rawPlotData, setRawPlotData] = useState([]);
@@ -15,6 +70,7 @@ const EEGPlotViewer = () => {
     const [uploadStatus, setUploadStatus] = useState(null);
     const [isAnimating, setIsAnimating] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [stressScore, setStressScore] = useState(null);
     const { theme } = useTheme();
 
     const channelColors = [
@@ -31,6 +87,7 @@ const EEGPlotViewer = () => {
             setDisplayedData([]);
             setCurrentIndex(0);
             setIsAnimating(false);
+            setStressScore(null);
         }
     };
 
@@ -66,19 +123,31 @@ const EEGPlotViewer = () => {
         formData.append('file', selectedFile);
 
         try {
-            const response = await fetch('http://127.0.0.1:5000/upload', {
+            // Upload file and get EEG data
+            const uploadResponse = await fetch('http://65.20.84.88/upload', {
                 method: 'POST',
                 body: formData
             });
             
-            if (response.ok) {
-                const data = await response.json();
-                const { timeSeriesData, channels } = processEEGData(data.eeg_data_points);
+            if (uploadResponse.ok) {
+                const uploadData = await uploadResponse.json();
+                const { timeSeriesData, channels } = processEEGData(uploadData.eeg_data_points);
                 setRawPlotData({ timeSeriesData, channels });
                 setDisplayedData([]);
                 setCurrentIndex(0);
                 setUploadStatus('success');
                 setIsAnimating(true);
+
+                // Get prediction
+                const predictionResponse = await fetch('http://65.20.70.13/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (predictionResponse.ok) {
+                    const predictionData = await predictionResponse.json();
+                    setStressScore(predictionData.predictions[0][0]);
+                }
             } else {
                 setUploadStatus('error');
                 console.error('Failed to upload file');
@@ -105,12 +174,12 @@ const EEGPlotViewer = () => {
                     setDisplayedData(prevData => {
                         const newPoint = rawPlotData.timeSeriesData[prevIndex];
                         const newData = [...prevData, newPoint];
-                        return newData.slice(-100); // Keep last 100 points
+                        return newData.slice(-100);
                     });
                     
                     return prevIndex + 1;
                 });
-            }, 100); // Adjust speed of animation here
+            }, 100);
         }
 
         return () => {
@@ -125,7 +194,7 @@ const EEGPlotViewer = () => {
             <Card className="max-w-6xl mx-auto">
                 <CardHeader>
                     <CardTitle className="text-3xl font-bold text-center">
-                        EEG Plot Viewer
+                        EEG Analysis Dashboard
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -147,7 +216,7 @@ const EEGPlotViewer = () => {
                                                     <span className="font-semibold">Click to upload</span> or drag and drop
                                                 </p>
                                                 <p className="text-xs text-muted-foreground">
-                                                    MAT files only
+                                                    MAT files only(<strong>not more than 1000kb</strong>)
                                                 </p>
                                             </div>
                                             <input 
@@ -195,54 +264,71 @@ const EEGPlotViewer = () => {
                                     className="w-full"
                                     disabled={isLoading || !selectedFile}
                                 >
-                                    {isLoading ? "Processing..." : "Generate Plot"}
+                                    {isLoading ? "Processing..." : "Analyze EEG Data"}
                                 </Button>
                             </div>
                         </div>
                     </form>
 
-                    {displayedData.length > 0 && rawPlotData.channels && (
-                        <div className="mt-8 space-y-4">
-                            <h2 className="text-2xl font-semibold mb-4">EEG Channel Plots</h2>
-                            <div className="w-full h-[600px] border border-muted rounded-lg p-4 bg-card">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <LineChart margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
-                                        <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis 
-                                            dataKey="time" 
-                                            type="number"
-                                            domain={['dataMin', 'dataMax']}
-                                            label={{ value: 'Time Points', position: 'bottom' }}
-                                        />
-                                        <YAxis 
-                                            label={{ 
-                                                value: 'Amplitude', 
-                                                angle: -90, 
-                                                position: 'insideLeft' 
-                                            }}
-                                        />
-                                        <Tooltip 
-                                            contentStyle={{
-                                                backgroundColor: theme === 'dark' ? '#1f2937' : '#ffffff',
-                                                border: '1px solid #e5e7eb',
-                                                borderRadius: '6px'
-                                            }}
-                                        />
-                                        {/* <Legend /> */}
-                                        {rawPlotData.channels.map((channel, index) => (
-                                            <Line
-                                                key={channel}
-                                                type="monotone"
-                                                dataKey={channel}
-                                                name={channel}
-                                                data={displayedData}
-                                                stroke={channelColors[index % channelColors.length]}
-                                                dot={false}
-                                                activeDot={{ r: 4 }}
-                                            />
-                                        ))}
-                                    </LineChart>
-                                </ResponsiveContainer>
+                    {(displayedData.length > 0 || stressScore !== null) && (
+                        <div className="mt-8 space-y-8">
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                                {stressScore !== null && (
+                                    <div className="lg:col-span-1">
+                                        <StressGauge score={stressScore} />
+                                    </div>
+                                )}
+                                
+                                {displayedData.length > 0 && rawPlotData.channels && (
+                                    <div className="lg:col-span-2">
+                                        <Card>
+                                            <CardHeader>
+                                                <CardTitle>EEG Channel Activity</CardTitle>
+                                            </CardHeader>
+                                            <CardContent>
+                                                <div className="h-[400px]">
+                                                    <ResponsiveContainer width="100%" height="100%">
+                                                        <LineChart margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+                                                            <CartesianGrid strokeDasharray="3 3" />
+                                                            <XAxis 
+                                                                dataKey="time" 
+                                                                type="number"
+                                                                domain={['dataMin', 'dataMax']}
+                                                                label={{ value: 'Time Points', position: 'bottom' }}
+                                                            />
+                                                            <YAxis 
+                                                                label={{ 
+                                                                    value: 'Amplitude', 
+                                                                    angle: -90, 
+                                                                    position: 'insideLeft' 
+                                                                }}
+                                                            />
+                                                            <Tooltip 
+                                                                contentStyle={{
+                                                                    backgroundColor: theme === 'dark' ? '#1f2937' : '#ffffff',
+                                                                    border: '1px solid #e5e7eb',
+                                                                    borderRadius: '6px'
+                                                                }}
+                                                            />
+                                                            {rawPlotData.channels.map((channel, index) => (
+                                                                <Line
+                                                                    key={channel}
+                                                                    type="monotone"
+                                                                    dataKey={channel}
+                                                                    name={channel}
+                                                                    data={displayedData}
+                                                                    stroke={channelColors[index % channelColors.length]}
+                                                                    dot={false}
+                                                                    activeDot={{ r: 4 }}
+                                                                />
+                                                            ))}
+                                                        </LineChart>
+                                                    </ResponsiveContainer>
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     )}
@@ -253,3 +339,4 @@ const EEGPlotViewer = () => {
 };
 
 export default EEGPlotViewer;
+
