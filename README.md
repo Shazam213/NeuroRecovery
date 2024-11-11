@@ -139,7 +139,8 @@ NeuroRecovery’s architecture integrates multiple technologies:
 3. **Set up the .env file:**
    ```bash
    Copy the contents of the env-example file into a new .env file.
-   Modify the values in .env as needed to match your environment.
+   make the new env file in the config folder and name it config.env
+   Modify the values in config.env as needed to match your environment.
 
 4. **Start the backend server:**
 
